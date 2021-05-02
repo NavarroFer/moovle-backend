@@ -1,0 +1,29 @@
+{
+  "name": "moovle-backend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NavarroFer/moovle-backend"
+  },
+  "author": "Fernando Navarro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NavarroFer/moovle-backendd/issues"
+  },
+  "homepage": "https://github.com/NavarroFer/moovle-backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "sequelize": "^6.6.2",
+    "sqlite3": "^5.0.2"
+  }
+}
