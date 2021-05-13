@@ -17,13 +17,15 @@
   },
   "homepage": "https://github.com/NavarroFer/moovle-backend#readme",
   "dependencies": {
+    "@prisma/client": "^2.22.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "passport": "^0.4.1",
-    "passport-jwt": "^4.0.0",
-    "sequelize": "^6.6.2",
-    "sqlite3": "^5.0.2"
+    "passport-jwt": "^4.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^2.22.0"
   }
 }

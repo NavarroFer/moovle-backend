@@ -25,9 +25,26 @@ app.use(cors());
 // Imports all of the routes from ./routes/index.js
 app.use('/moovle',require('./routes'));
 
-(async () => {
-  await Db.sequelize.sync();
+const { PrismaClient } = require('@prisma/client')
 
-  app.listen(port);
-  console.log("Server listening in " + port);
-})();
+const prisma = new PrismaClient()
+
+main()
+  .catch(e => {
+    throw e
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
+  })
+
+async function main() {
+  var cant = 0;
+  var productos;
+  
+//   app.listen(port);
+//   console.log("Server listening in " + port);
+
+  productos = await prisma.producto.findMany();
+ 
+  console.log(productos);
+}

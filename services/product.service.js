@@ -1,6 +1,5 @@
 const Db = require("../database");
 const jwt = require("jsonwebtoken");
-const { Sequelize } = require("../database");
 
 async function getAll() {
   let products = await Db.Product.findAll();

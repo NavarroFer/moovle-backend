@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model usuario { //fernando navarro fer123 12345
+  nombre   String[] @db.VarChar(30)
+  apellido String   @db.VarChar(30)
+  user     String   @id @db.VarChar(20)
+  password String   @db.VarChar(20)
+}
+
+
+model producto { //sillon 1.6, sillon 1.8, mesa 1.6, mesa 1.8, etc
+  id          BigInt  @id @default(autoincrement()) 
+  nombre      String? @db.VarChar(40)
+  descripcion String? @db.VarChar(255)
+  categoria   categoria  @relation(fields: [idCategoria], references: [id])
+  idCategoria BigInt
+  unitario    Float
+  productosDeVenta productoDeVenta[]
+}
+
+model categoria { //sillones, sillas, mesas, poff, otros, etc
+  id                BigInt  @id @default(autoincrement())
+  nombre            String? @db.VarChar(40)
+  productos         producto[]
+  opcionesCategoria   opcionCategoria[]
+}
+
+model opcionCategoria{ //1 cant_divisiones 2
+  id            BigInt @id @default(autoincrement())
+  nombreOpcion  String @db.VarChar(40)
+  categoria   categoria  @relation(fields: [idCategoria], references: [id])
+  idCategoria BigInt
+  opcionesCatValores  opcionCatValores[]    
+}
+
+model opcionCatValores{ //Si la opcion categoria no esta aca, quiere decir que el valor que se toma es el numero (para cantidad por ejenplo)
+  idOpcionCat BigInt
+  categoria   opcionCategoria  @relation(fields: [idOpcionCat], references: [id])
+  idValor BigInt
+  nombre String  
+  productoDeVentaOpciones productoDeVentaOpciones[]
+  @@id([idOpcionCat, idValor])
+  //esto depende de cada opcion y categoria, ejemplo -> ( sillon, patas, [0: wengue, 1: paraiso, 2: metal] )
+  //otro ejemplo -> ( sillon, divisiones, 2 (cantidad) )
+  //otro ejemplo -> ( sillon, tirado, [0: no, 1: si] )
+  //otro ejemplo -> ( mesa, patas, [0: wengue, 1: paraiso premium, 2: metal, 3: roble] )
+}
+
+model productoDeVenta {
+  id            BigInt @id @default(autoincrement()) 
+  ventaAsociada venta  @relation(fields: [idVenta], references: [id])
+  idVenta       BigInt
+  productoAsociado producto  @relation(fields: [idProducto], references: [id])
+  idProducto       BigInt
+  productoDeVentaOpciones productoDeVentaOpciones[]
+  comentario   String @db.VarChar(127)
+  unitarioEspecial Float //En caso de que este este en null, se toma el unitario del producto, sino, este.
+  tipoVentaAsociada    tipoVenta    @relation(fields: [idTipoVenta], references: [id])
+  idTipoVenta Int //taller, stock o nissa
+}
+
+model tipoVenta{
+  id Int @id @default(autoincrement()) 
+  nombre String
+  productoDeVenta productoDeVenta?
+}
+
+model productoDeVentaOpciones {
+  id   BigInt @id @default(autoincrement()) 
+  productoDeVentaAsociado productoDeVenta  @relation(fields: [idProductoDeVenta], references: [id])
+  idProductoDeVenta       BigInt
+  opcionCatValorAsocida opcionCatValores  @relation(fields: [idOpcionCat,idValor], references: [idOpcionCat, idValor])
+  idOpcionCat       BigInt
+  idValor BigInt
+
+}
+
+model venta {
+  id                BigInt   @id @default(autoincrement())
+  nombre            String   @db.VarChar(30)
+  telefono          String   @db.VarChar(30)
+  domicilio         String   @db.VarChar(30)
+  total             Float    
+  descuento         Float 
+  totalPagado       Float
+  createdAt         DateTime @default(now())
+  fechaFabricado    DateTime
+  fechaTerminaPagar DateTime
+  fechaEntregado    DateTime
+  estado            Int //0: fabrica, 1: fabricado, 2: a coordinar, 3: coordinada, 4: entregada (y pagada)
+  //en caso de ser una venta de stock, va directo a 2, o a 4 (dependiendo si hay entrega o no)
+  // en caso de ser una venta de fabrica, es 0 --> 1 --> 2 --> 3 --> 4
+  comentario        String  @db.VarChar(255)
+  productos         productoDeVenta[]
+  entregas           entrega[]
+}
+
+model entrega {
+  id  BigInt   @id @default(autoincrement())
+  ventaAsociada venta  @relation(fields: [idVenta], references: [id])
+  idVenta       BigInt
+  fechaEntrega DateTime
+  horaMin DateTime
+  horaMax DateTime  
+}
+
+
